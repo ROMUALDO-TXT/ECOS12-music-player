@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "es6"
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@tests/*": [
+        "src/modules/tutors/infra/typeorm/entities/tests/*"
+      ]
+    },
+    "typeRoots": [
+      "@types",
+      "./node_modules/@types"
+    ],
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictPropertyInitialization":true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  }
+}

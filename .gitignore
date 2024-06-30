@@ -1,0 +1,8 @@
+.env
+.idea/
+.vscode/
+.docker/dbdata
+node_modules/
+build/
+tmp/
+temp/
