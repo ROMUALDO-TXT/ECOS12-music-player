@@ -64,6 +64,7 @@ export default class UsersController {
 
     public async create(request: Request, response: Response): Promise<Response> {
         let user: any;
+        let token: string;
         try {
             const { email, name, password } = request.body;
             const emailExists = await this.repository.findOne({
@@ -78,9 +79,13 @@ export default class UsersController {
 
             const hashedPass = await hash(password, 8);
 
-            user = this.repository.create({ name, email, password: hashedPass });
+            user  = await this.repository.save(this.repository.create({ name, email, password: hashedPass }));
 
-            await this.repository.save(user);
+            token = sign({
+                sub: {
+                    id: user.id
+                }
+            }, process.env.APP_SECRET as Secret, { expiresIn: '30d' });
 
             delete user.password;
         } catch (err) {
@@ -88,6 +93,9 @@ export default class UsersController {
             return response.status(500).json(err);
         }
 
-        return response.status(201).json(user);
+        return response.status(201).json({
+            token: token,
+            user: user
+        });    
     }
 }

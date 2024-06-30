@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedMimeTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/wave'];
-  console.log(file.mimetype)
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {

@@ -29,6 +29,8 @@ export default class TracksController {
 
             res.status(201).json(track);
         } catch (err) {
+            console.log(err)
+
             if (err instanceof AppError) {
                 res.status(err.statusCode).json({ message: err.message });
             } else {

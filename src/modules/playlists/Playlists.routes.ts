@@ -6,11 +6,12 @@ import { celebrate, Segments, Joi } from "celebrate";
 
 const router = Router();
 
-router.post('/', isAuthenticated,
+router.use(isAuthenticated);
+
+router.post('/', 
     celebrate({
         [Segments.BODY]: {
             name: Joi.string().required(),
-            ownerId: Joi.string().required(),
             description: Joi.string().required(),
         }
     }), (req, res) => singleton(PlaylistController).createPlaylist(req, res));
@@ -22,24 +23,22 @@ router.get('/:playlistId',
         }
     }), (req, res) => singleton(PlaylistController).getPlaylistById(req, res));
 
-router.post('/add/:playlistId',
+    router.get('/', (req, res) => singleton(PlaylistController).getPlaylists(req, res));
+
+router.post('/add',
     celebrate({
         [Segments.BODY]: {
             trackId: Joi.string().required(),
-        },
-        [Segments.PARAMS]: {
             playlistId: Joi.string().required(),
-        }
+        },
     }), (req, res) => singleton(PlaylistController).addTrackToPlaylist(req, res));
 
-router.post('/remove/:playlistId',
+router.post('/remove',
     celebrate({
         [Segments.BODY]: {
             trackId: Joi.string().required(),
-        },
-        [Segments.PARAMS]: {
             playlistId: Joi.string().required(),
-        }
+        },
     }), (req, res) => singleton(PlaylistController).removeTrackFromPlaylist(req, res));
 
 

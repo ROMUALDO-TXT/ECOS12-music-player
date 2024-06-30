@@ -36,7 +36,7 @@ export class PlaylistController {
             }
         }
     }
-    public async getPlaylistById(req: Request, res: Response): Promise<void> {
+    public async getPlaylistById(req: Request, res: Response) {
         try {
             const playlistId = req.params.playlistId;
             const playlist = await this.repository.findOne({
@@ -72,10 +72,47 @@ export class PlaylistController {
         }
     }
 
+    public async getPlaylists(req: Request, res: Response) {
+        try {
+            const ownerId = req.user.id;
+            const playlist = await this.repository.find({
+                select: {
+                    id: true,
+                    tracks: true,
+                    name: true,
+                    description: true,
+                    owner: {
+                        name: true,
+                    }
+                },
+                where: {
+                    owner: {
+                        id: ownerId
+                    }
+                },
+                relations: {
+                    tracks: true,
+                    owner: true,
+                }
+            })
+
+            if (!playlist) {
+                throw new AppError('Playlist not found', 404);
+            }
+
+            res.json(playlist);
+        } catch (err) {
+            if (err instanceof AppError) {
+                res.status(err.statusCode).json({ message: err.message });
+            } else {
+                res.status(500).json({ message: 'Internal Server Error' });
+            }
+        }
+    }
+
     public async addTrackToPlaylist(req: Request, res: Response) {
         try {
-            const { playlistId } = req.params;
-            const { trackId } = req.body;
+            const { playlistId, trackId } = req.body;
 
             const playlist = await this.repository.findOne({ where: { id: playlistId }, relations: ['tracks'] });
 
@@ -107,10 +144,9 @@ export class PlaylistController {
         }
     }
 
-    public async removeTrackFromPlaylist(req: Request, res: Response): Promise<void> {
+    public async removeTrackFromPlaylist(req: Request, res: Response) {
         try {
-            const { playlistId } = req.params;
-            const { trackId } = req.body;
+            const { playlistId, trackId } = req.body;
 
             const playlist = await this.repository.findOne({
                 where: { id: playlistId },
